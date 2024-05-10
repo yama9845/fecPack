@@ -113,7 +113,7 @@ func FileMerge(files [][]byte) {
     combinedData, err := combineFiles(edp, fileNum)
     if err != nil {
         fmt.Printf("Failed to combine files: %v\n", err)
-        return
+        return nil, err
     }
-	return combinedData
+    return combinedData, nil
 }
