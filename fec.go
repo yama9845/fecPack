@@ -25,12 +25,12 @@ type encData struct {
 }
 
 func combineFiles(edp *encData, fileNum int) ([]byte, error) {
-    readSizes := make([]int, fileNum) // Array to track how much data has been read from each fdp
+    readSizes := make([]int, fileNum)
     totalSize := 0
-    chunkSize := MB / fileNum // Size of data to be read at a time
+    chunkSize := MB / fileNum
 
     for _, fdp := range edp.fd {
-        totalSize += len(fdp.fileData) // Include the size of the fdp structure itself
+        totalSize += len(fdp.fileData)
     }
 
     combinedData := make([]byte, 0, totalSize)
@@ -44,10 +44,7 @@ func combineFiles(edp *encData, fileNum int) ([]byte, error) {
                 bytesToRead = chunkSize
             }
             if bytesToRead > 0 {
-                // Append the chunk of data to the combinedData
                 combinedData = append(combinedData, fdp.fileData[readSizes[i]:readSizes[i]+bytesToRead]...)
-
-                // Update the number of bytes read from this fdp
                 readSizes[i] += bytesToRead
                 totalSize -= bytesToRead
             }
@@ -66,22 +63,19 @@ func createEncodingData(fileNum int, files [][]byte) (*encData, error) {
     for i, file := range files {
         fileSz := int64(len(file))
 
-        // Copy file data and metadata to encData struct
         fdp := &fileData{
             magic:    MAGIC,
             size:     fileSz,
-            fileData: make([]byte, 0, len(file)+4+4+8+256+1), // Allocate space for metadata and data, size field is now 8 bytes
+            fileData: make([]byte, 0, len(file)+4+4+8+256+1),
         }
 
-        // Write metadata to the beginning of fileData
         buf := new(bytes.Buffer)
         binary.Write(buf, binary.LittleEndian, fdp.magic)
         binary.Write(buf, binary.LittleEndian, fdp.pad1)
-        binary.Write(buf, binary.LittleEndian, fdp.size)  // This now writes an int64
+        binary.Write(buf, binary.LittleEndian, fdp.size)
         binary.Write(buf, binary.LittleEndian, fdp.name)
         fdp.fileData = append(fdp.fileData, buf.Bytes()...)
 
-        // Append actual file data
         fdp.fileData = append(fdp.fileData, file...)
 
         edp.fd[i] = fdp
@@ -100,7 +94,6 @@ func FileMerge(files [][]byte) ([]byte, error) {
 
     fmt.Println("<target files>")
 
-    // Encode data to fragments (creating files for backup)
     edp, err := createEncodingData(fileNum, files)
     if err != nil {
         fmt.Printf("Failed to create encoding data: %v\n", err)
