@@ -99,9 +99,6 @@ func FileMerge(files [][]byte) ([]byte, error) {
     }
 
     fmt.Println("<target files>")
-    for i, file := range files {
-        fmt.Printf("File%d: %v\n", i+1, file)
-    }
 
     // Encode data to fragments (creating files for backup)
     edp, err := createEncodingData(fileNum, files)
