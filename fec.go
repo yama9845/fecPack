@@ -90,12 +90,12 @@ func createEncodingData(fileNum int, files [][]byte) (*encData, error) {
     return edp, nil
 }
 
-func FileMerge(files [][]byte) {
+func FileMerge(files [][]byte) ([]byte, error) {
     fileNum := len(files)
 
     if fileNum < 1 {
         fmt.Println("The num of files to be encoded is less than 1.")
-        return
+        return nil, fmt.Errorf("The num of files to be encoded is less than 1.")
     }
 
     fmt.Println("<target files>")
@@ -107,7 +107,7 @@ func FileMerge(files [][]byte) {
     edp, err := createEncodingData(fileNum, files)
     if err != nil {
         fmt.Printf("Failed to create encoding data: %v\n", err)
-        return
+        return nil, err
     }
 
     combinedData, err := combineFiles(edp, fileNum)
