@@ -115,4 +115,5 @@ func FileMerge(files [][]byte) {
         fmt.Printf("Failed to combine files: %v\n", err)
         return
     }
+	return combinedData
 }
