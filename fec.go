@@ -90,7 +90,7 @@ func createEncodingData(fileNum int, files [][]byte) (*encData, error) {
     return edp, nil
 }
 
-func fileMerge(files [][]byte) {
+func FileMerge(files [][]byte) {
     fileNum := len(files)
 
     if fileNum < 1 {
